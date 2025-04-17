@@ -1,5 +1,7 @@
 extends Node3D
 
+class_name Player
+
 @onready var gun : Marker3D = $Gun
 
 @export var speed := 0.02
@@ -21,7 +23,7 @@ func _process(_delta: float) -> void:
 	self.input_fire = Input.is_action_just_pressed("ui_accept")
 	
 	if input_fire:
-		Global.on_gun_fired.emit(self.gun.global_position, self.rotation)
+		Global.on_gun_fired.emit(self)
 	
 func _physics_process(delta: float) -> void:
 
