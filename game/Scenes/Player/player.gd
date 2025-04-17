@@ -1,42 +1,48 @@
 extends Node3D
 
+@onready var gun : Marker3D = $Gun
+
 @export var speed := 0.02
 @export var deceleration_factor := 0.98
 
-@export var velocity := Vector3.ZERO
-@export var acceleration := Vector3.ZERO
+var velocity := Vector3.ZERO
+var acceleration := Vector3.ZERO
 
-@onready var gun : Marker3D = $Gun
+var input_up := false
+var input_left := false
+var input_right := false
+var input_fire := false
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	
-	var input := Input.is_action_pressed("ui_up")
-	var left_input := Input.is_action_pressed("ui_left")
-	var right_input := Input.is_action_pressed("ui_right")
-	var fire := Input.is_action_just_pressed("ui_accept")
+	self.input_up = Input.is_action_pressed("ui_up")
+	self.input_left = Input.is_action_pressed("ui_left")
+	self.input_right = Input.is_action_pressed("ui_right")
+	self.input_fire = Input.is_action_just_pressed("ui_accept")
 	
-	var forward := self.transform.basis.y
-	
-	if fire:
-		print(forward)
+	if input_fire:
 		Global.on_gun_fired.emit(self.gun.global_position, self.rotation)
 	
-	if left_input:
+func _physics_process(delta: float) -> void:
+
+	var forward := self.transform.basis.y
+	
+	if input_left:
 		self.rotation.z += 1 * delta
-	if right_input:
+	if input_right:
 		self.rotation.z -= 1 * delta
 	
-	if input:
+	if input_up:
 		acceleration += forward * speed * delta
 	else:
 		acceleration = Vector3.ZERO
 		self.velocity *= self.deceleration_factor
 	
-	
+	acceleration.x = clampf(acceleration.x, -0.01, 0.01)
+	acceleration.y = clampf(acceleration.y, -0.01, 0.01)
+
 	self.velocity += acceleration
 	self.velocity.x = clampf(self.velocity.x, -0.35, 0.35)
 	self.velocity.y = clampf(self.velocity.y, -0.35, 0.35)
-	#print(self.velocity)
-		
-	
+
 	self.position += self.velocity
