@@ -15,7 +15,7 @@ static func init(spawn_position: Vector3, spawn_rotation: Vector3) -> Projectile
 func _physics_process(delta: float) -> void:
     var direction := self.transform.basis.y
     
-    self.position += direction.normalized() * speed * delta
+    self.position += direction * speed * delta
 
 func _on_timer_timeout() -> void:
     self.queue_free()
