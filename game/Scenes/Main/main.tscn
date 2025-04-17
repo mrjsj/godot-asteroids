@@ -1,0 +1,60 @@
+[gd_scene load_steps=6 format=3 uid="uid://cawsw7u2uw7l6"]
+
+[ext_resource type="PackedScene" uid="uid://ct3nfl6k7u11h" path="res://Scenes/Player/player.tscn" id="1_qw60k"]
+[ext_resource type="Script" uid="uid://31ikbbs6kym5" path="res://Scenes/Main/projectile_spawner.gd" id="3_5yls4"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_7u77a"]
+sky_top_color = Color(0.0366329, 0.0532976, 0.0765334, 1)
+sky_horizon_color = Color(0.13818, 0.137852, 0.13844, 1)
+ground_bottom_color = Color(0.0915908, 0.0736149, 0.052732, 1)
+ground_horizon_color = Color(0.13818, 0.137852, 0.13844, 1)
+energy_multiplier = 0.5
+
+[sub_resource type="Sky" id="Sky_jjgbg"]
+sky_material = SubResource("ProceduralSkyMaterial_7u77a")
+
+[sub_resource type="Environment" id="Environment_bo1nx"]
+background_mode = 2
+sky = SubResource("Sky_jjgbg")
+tonemap_mode = 2
+glow_enabled = true
+
+[node name="Main" type="Node3D"]
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 255.0
+offset_bottom = 80.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 71.0
+offset_bottom = 60.0
+metadata/_edit_group_ = true
+
+[node name="Score" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Score: 0"
+
+[node name="Lives" type="Label" parent="UI/VBoxContainer"]
+layout_mode = 2
+text = "Lives: 3"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_bo1nx")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.18177, 0)
+projection = 1
+size = 100.0
+
+[node name="Player" parent="." instance=ExtResource("1_qw60k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+
+[node name="ProjectileSpawner" type="Node3D" parent="."]
+script = ExtResource("3_5yls4")

@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=3 uid="uid://ct3nfl6k7u11h"]
+
+[ext_resource type="Script" uid="uid://8tiej1s2b1tw" path="res://Scenes/Player/player.gd" id="1_uvnfx"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_7u77a"]
+size = Vector3(2, 6, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_7u77a"]
+size = Vector3(5.8, 0.05, 0.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jjgbg"]
+size = Vector3(1.8, 0.05, 0.2)
+
+[node name="Player" type="Node3D"]
+script = ExtResource("1_uvnfx")
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("PrismMesh_7u77a")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(0.156444, -0.987611, 0.012217, 0.987687, 0.156434, -0.00174533, -0.000187448, 0.0123396, 0.999924, -0.435, -0.08, 0)
+shape = SubResource("BoxShape3D_7u77a")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(0.156578, 0.987541, 0.0157065, -0.987634, 0.156426, 0.0104718, 0.00788441, -0.0171519, 0.999822, 0.435, -0.08, 0)
+shape = SubResource("BoxShape3D_7u77a")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.95956, 0)
+shape = SubResource("BoxShape3D_jjgbg")
+
+[node name="Gun" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.94093, 0)
+
+[node name="ExhaustLeft" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, -3, 0)
+
+[node name="ExhaustRight" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -3, 0)
