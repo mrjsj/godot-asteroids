@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://dbkemoytwtwns"]
+
+[ext_resource type="Script" uid="uid://wpj2hyb1n2s8" path="res://Scenes/Asteroid/asteroid.gd" id="1_u87q6"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lixft"]
+size = Vector3(4, 4, 0.1)
+
+[node name="Asteroid" type="Node3D"]
+script = ExtResource("1_u87q6")
+metadata/_edit_group_ = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_lixft")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
