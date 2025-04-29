@@ -6,6 +6,10 @@ class_name Player
 
 @export var speed := 0.02
 @export var deceleration_factor := 0.98
+@export var max_velocity := 0.45
+@export var max_acceleration := 0.01
+
+const CAMERA_SIZE : float = 100
 
 var velocity := Vector3.ZERO
 var acceleration := Vector3.ZERO
@@ -28,7 +32,7 @@ func _process(_delta: float) -> void:
 func _physics_process(delta: float) -> void:
 
     var forward := self.transform.basis.y
-    
+
     if input_left:
         self.rotation.z += 1 * delta
     if input_right:
@@ -40,11 +44,14 @@ func _physics_process(delta: float) -> void:
         acceleration = Vector3.ZERO
         self.velocity *= self.deceleration_factor
     
-    acceleration.x = clampf(acceleration.x, -0.01, 0.01)
-    acceleration.y = clampf(acceleration.y, -0.01, 0.01)
+    acceleration.x = clampf(acceleration.x, -max_acceleration, max_acceleration)
+    acceleration.y = clampf(acceleration.y, -max_acceleration, max_acceleration)
 
     self.velocity += acceleration
-    self.velocity.x = clampf(self.velocity.x, -0.35, 0.35)
-    self.velocity.y = clampf(self.velocity.y, -0.35, 0.35)
+    self.velocity.x = clampf(self.velocity.x, -max_velocity, max_velocity)
+    self.velocity.y = clampf(self.velocity.y, -max_velocity, max_velocity)
 
     self.position += self.velocity
+
+    self.position = Global.keep_object_inside_world_boundaries(self.position)
+
