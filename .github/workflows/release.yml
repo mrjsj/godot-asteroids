@@ -138,41 +138,7 @@ jobs:
 
       - name: Create index.html
         run: |
-          cat > site/index.html <<'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Play Versions</title>
-          </head>
-          <body>
-            <h1>Select a version to play</h1>
-            <select id="versionSelect"></select>
-            <iframe id="gameFrame" width="800" height="600"></iframe>
-            <script>
-              async function loadVersions() {
-                const repo = window.location.pathname.split("/")[1] + "/" + window.location.pathname.split("/")[2];
-                const resp = await fetch(`https://api.github.com/repos/${repo}/releases`);
-                const releases = await resp.json();
-                const versions = releases.map(r => r.tag_name).reverse();
-                const select = document.getElementById("versionSelect");
-                const iframe = document.getElementById("gameFrame");
-                versions.forEach(v => {
-                  const opt = document.createElement("option");
-                  opt.value = v;
-                  opt.textContent = v;
-                  select.appendChild(opt);
-                });
-                select.onchange = () => {
-                  iframe.src = "versions/" + select.value + "/index.html";
-                };
-                select.value = versions[0];
-                iframe.src = "versions/" + versions[0] + "/index.html";
-              }
-              loadVersions();
-            </script>
-          </body>
-          </html>
-          EOF          
+          cp build/index.html site/index.html
 
       - name: Setup pages
         if: startsWith(github.ref, 'refs/tags/')
