@@ -89,6 +89,13 @@ jobs:
           use_preset_export_path: true
           archive_output: ${{ startsWith(github.ref, 'refs/tags/') }}
 
+      - name: Download existing site (if any)
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+          path: site
+        continue-on-error: true          
+
       - name: Show build directory
         if: startsWith(github.ref, 'refs/tags/')
         run: |
@@ -110,16 +117,69 @@ jobs:
           else
             ls -R .
           fi
-          
-      - name: Create release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: ncipollo/release-action@v1
+
+      - name: Prepare deployment folder
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          mkdir -p site/versions/$TAG
+          cp -r build/* site/versions/$TAG/
+
+          # Create or update versions.json
+          VFILE=site/versions.json
+          if [ ! -f $VFILE ]; then
+            echo '[]' > $VFILE
+          fi
+          jq ". + [\"$TAG\"] | unique" $VFILE > $VFILE.tmp && mv $VFILE.tmp $VFILE
+
+          # Create index.html if missing
+          if [ ! -f site/index.html ]; then
+            cat > site/index.html <<'EOF'
+            <!DOCTYPE html>
+            <html>
+            <head><title>Play Versions</title></head>
+            <body>
+              <h1>Select a version to play</h1>
+              <select id="versionSelect"></select>
+              <iframe id="gameFrame" width="800" height="600"></iframe>
+              <script>
+                async function loadVersions() {
+                  const response = await fetch("versions.json");
+                  const versions = await response.json();
+                  const select = document.getElementById("versionSelect");
+                  const iframe = document.getElementById("gameFrame");
+                  versions.forEach(v => {
+                    let opt = document.createElement("option");
+                    opt.value = v;
+                    opt.textContent = v;
+                    select.appendChild(opt);
+                  });
+                  select.onchange = () => {
+                    iframe.src = "versions/" + select.value + "/index.html";
+                  };
+                  select.value = versions[versions.length - 1];
+                  iframe.src = "versions/" + select.value + "/index.html";
+                }
+                loadVersions();
+              </script>
+            </body>
+            </html>
+            EOF
+          fi
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generateReleaseNotes: true
-          tag: ${{ github.ref_name }}
-          artifacts: |
-            ${{ steps.build.outputs.archive_directory }}/**/*.zip
+          path: site          
+          
+      #- name: Create release
+      #  if: startsWith(github.ref, 'refs/tags/')
+      #  uses: ncipollo/release-action@v1
+      #  with:
+      #    token: ${{ secrets.GITHUB_TOKEN }}
+      #    generateReleaseNotes: true
+      #    tag: ${{ github.ref_name }}
+      #    artifacts: |
+      #      ${{ steps.build.outputs.archive_directory }}/**/*.zip
           #  ${{ steps.build.outputs.build_directory }}/**/*.exe
           #  ${{ steps.build.outputs.build_directory }}/**/*.x86_64
 
@@ -131,7 +191,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '/home/runner/.local/share/godot/builds/Web'
+          # path: '/home/runner/.local/share/godot/builds/Web'
+          path: site
 
       - name: Deploy to GitHub Pages
         if: startsWith(github.ref, 'refs/tags/')
