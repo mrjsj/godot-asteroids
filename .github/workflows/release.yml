@@ -139,6 +139,8 @@ jobs:
             unzip -o tmp/Web.zip -d site/versions/$TAG
             rm tmp/Web.zip
           done
+        env:
+          GH_TOKEN: ${{ github.token }}        
 
 
       - name: Setup pages
