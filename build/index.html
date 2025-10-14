@@ -31,9 +31,10 @@
 
     <script>
         function resizeIframe() {
-            const select = document.getElementById("versionSelect");
+            const select = document.getElementById("resolutionSelect");
             const [width, height] = select.value.split(','); // Get width and height
-            const iframe = document.getElementById("gameFrame");
+            var iframe = document.getElementById("gameFrame");
+            console.log(width, height);
             iframe.width = width;
             iframe.height = height;
         }
