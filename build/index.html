@@ -16,15 +16,18 @@
 </head>
 
 <body>
-    <h1>Select a version to play</h1>
+    <h1>Godot Asteroids!</h1>
     <div>
-        <label for="resolutionSelect">Choose a resolution: </label>
+        <label for="resolutionSelect">Change resolution: </label>
         <select id="resolutionSelect" onchange="resizeIframe()">
             <option value="800,600">800x600</option>
             <option value="1024,768">1024x768</option>
             <option value="1280,720">1280x720</option>
             <option value="1920,1080">1920x1080</option>
         </select>
+    </div>
+    <div>
+        <label for="resolutionSelect">Select version: </label>
         <select id="versionSelect"></select>
     </div>
     <iframe id="gameFrame" width="800" height="600"></iframe>
